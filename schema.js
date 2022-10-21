@@ -7,9 +7,9 @@ mongoose.set('debug', true);
 const productSchema = new mongoose.Schema({
   product_id: Number,
   results: [
-    {question_id: {type:Number, require:true},
+    {question_id: {type: Number},
       question_body: {type: String, reuqire: true},
-      question_data: {type: Date, "default": new Date()},
+      question_date: {type: Date, "default": new Date()},
       asker_name: {type:String, require: true},
       question_helpfulness: {type: Number, "default" : 0},
       reported: {type: Boolean, "default" : false},
@@ -17,9 +17,10 @@ const productSchema = new mongoose.Schema({
       id: {
         id: {type: Number, require:true},
         body:{type: String,require:true},
-        data:{type: Number, require: true},
+        date:{type: Date, "default": new Date()},
         answer_name: {type:String, require: true},
-        helpfulness:{type: Number},
+        helpfulness:{type: Number, 'default': 0},
+        reported:{type:Boolean, 'default': false},
         photos: [{type : Array , "default" : [] }]
       }
     }

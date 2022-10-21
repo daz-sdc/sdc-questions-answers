@@ -7,7 +7,11 @@ const db = require('./db.js')
 
 app.use(express.json());
 
-app.get('/', (req, res)=>{
+app.get('/',(req,res)=>{
+  res.status(200).send('success')
+})
+
+app.get('/qa', (req, res)=>{
     let count;
     let product_id = parseInt(req.query.product_id)
     if (req.query.count === undefined){
@@ -23,14 +27,13 @@ app.get('/', (req, res)=>{
         res.status(200).send(response[0])
       })
       .catch((err)=>{
-        res.status(500)
-        console.log(err)
+        res.status(500).send(err)
       })
 
     }
 })
 
-app.post('/', (req,res)=>{
+app.post('/qa', (req,res)=>{
     // console.log(req.body)
     let body = req.body.body;
     let name = req.body.name;
@@ -44,11 +47,63 @@ app.post('/', (req,res)=>{
 
     })
     .catch((err)=>{
-      res.status(500)
-      console.log(err)
+      res.status(500).send(err)
     })
 
 })
+
+app.post('/qa/:id/answers',(req,res)=>{
+  console.log(req.params)
+  let body = req.body.body;
+  let name = req.body.name;
+  let email = req.body.email;
+  let id = req.params.id;
+  let photo = req.body.photo || []
+
+  db.postAnswer(body, name, email, id, photo)
+    .then((response)=>{
+      res.status(200).send(response)
+    })
+    .catch((err)=>{
+      res.status(500).send(err)
+    })
+
+})
+
+app.put('/qa/:id/helpful', (req,res)=>{
+  console.log(req.params.id)
+  let id = req.params.id
+  db.makerQSHelpful(id)
+  .then((response)=>{
+    res.status(200).send(response)
+  })
+  .catch((err)=>{
+    res.status(500).send(err)
+  })
+})
+
+app.put('/qa/:id/report', (req, res)=>{
+  let id = req.params.id
+  db.makeReportQ(id)
+  .then((response)=>{
+    res.status(200).send(response)
+  })
+  .catch((err)=>{
+    res.status(500).send(err)
+  })
+})
+
+// app.put('/qa/answers/:id/helpful', (req, res)=>{
+//   let id = req.params.id
+//   db.markAnsHelpful(id)
+//   .then((response)=>{
+//     res.status(200).send(response)
+//   })
+//   .catch((err)=>{
+//     res.status(500).send(err)
+//     console.log(err)
+//   })
+// })
 
 
 

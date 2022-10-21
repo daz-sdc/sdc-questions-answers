@@ -13,10 +13,32 @@ const db = mongoose.connect('mongodb://localhost/SDC', () =>{
 
 
 exports.getAll = (id, count)=>{
-    return Product_data.find({product_id:id},{product_id:1, results:{$slice:Number(count)}})
+    return Product_data.find({product_id:id},{product_id: 1, results:{$slice:Number(count)}})
 }
 
 exports.postQuestion = (body, name , id)=>{
-  return Product_data.update({product_id:id},{$push:{results: {question_body: body, asker_name: name}}},{upsert:false})
+  return Product_data.update({product_id:id},{$push:{results: {question_body: body, asker_name: name, question_id: Date.now() }}},{upsert:false})
+}
 
+exports.postAnswer = (body, name, email, id, photo) =>{
+  return  Product_data.update({'results.question_id':id},
+  {$set: {[`results.$.answers.${Date.now()}`]:{id: Date.now(), body:body, answer_name:name, date: new Date(), helpfulness: 0, reported: false, photo: photo, }}})
+
+}
+
+exports.makerQSHelpful = (id) =>{
+  return Product_data.update({'results.question_id': id},
+  {$inc: {'results.$.question_helpfulness':  1}})
+}
+
+exports.makeReportQ = (id) =>{
+  return Product_data.update({'results.question_id':id},
+  {$set: {'results.$.reported':  true}})
+}
+
+exports.markAnsHelpful = (id) =>{
+  let target = `results.answers.${id}.id`
+  let report = `results.answers.$**`
+  return Product_data.update({[target]:id},
+  {$set: {[report]: true}})
 }
