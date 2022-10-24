@@ -93,20 +93,29 @@ app.put('/qa/:id/report', (req, res)=>{
   })
 })
 
-// app.put('/qa/answers/:id/helpful', (req, res)=>{
-//   let id = req.params.id
-//   db.markAnsHelpful(id)
-//   .then((response)=>{
-//     res.status(200).send(response)
-//   })
-//   .catch((err)=>{
-//     res.status(500).send(err)
-//     console.log(err)
-//   })
-// })
+app.put('/qa/answers/:id/reported', (req, res)=>{
+  let id = req.params.id
+  db.reportAns(id)
+  .then((response)=>{
+    res.status(200).send(response)
+  })
+  .catch((err)=>{
+    res.status(500).send(err)
+    console.log(err)
+  })
+})
 
-
-
+app.put('/qa/answers/:id/helpfulness', (req, res)=>{
+  let id = req.params.id
+  db.markAnsHelpful(id)
+  .then((response)=>{
+    res.status(200).send(response)
+  })
+  .catch((err)=>{
+    res.status(500).send(err)
+    console.log(err)
+  })
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

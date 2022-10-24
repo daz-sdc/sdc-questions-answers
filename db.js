@@ -36,9 +36,16 @@ exports.makeReportQ = (id) =>{
   {$set: {'results.$.reported':  true}})
 }
 
-exports.markAnsHelpful = (id) =>{
-  let target = `results.answers.${id}.id`
-  let report = `results.answers.$**`
-  return Product_data.update({[target]:id},
+exports.reportAns = (id) =>{
+  let target = `results.answers.${id}`
+  let report = `results.$.answers.${id}.reported`
+  return Product_data.updateOne({[target]:{$exists:true}},
   {$set: {[report]: true}})
+}
+
+exports.markAnsHelpful = (id) =>{
+  let target = `results.answers.${id}`
+  let report = `results.$.answers.${id}.helpfulness`
+  return Product_data.updateOne({[target]:{$exists:true}},
+    {$inc: {[report]:  1}})
 }
