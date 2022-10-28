@@ -1,10 +1,14 @@
 /* eslint-disable no-undef */
 const express = require('express');
+const newrelic = require('newrelic')
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 const db = require('./db.js')
-
+newrelic.instrumentLoadedModule(
+  'express',    // the module's name, as a string
+  express // the module instance
+);
 app.use(express.json());
 
 app.get('/',(req,res)=>{
@@ -24,6 +28,7 @@ app.get('/qa', (req, res)=>{
     } else{
       db.getAll(product_id, count)
       .then((response)=>{
+        // console.log(response[0])
         res.status(200).send(response[0])
       })
       .catch((err)=>{
@@ -62,7 +67,7 @@ app.post('/qa/:id/answers',(req,res)=>{
 
   db.postAnswer(body, name, email, id, photo)
     .then((response)=>{
-      res.status(200).send(response)
+      res.status(200).send(response[0])
     })
     .catch((err)=>{
       res.status(500).send(err)
@@ -93,7 +98,7 @@ app.put('/qa/:id/report', (req, res)=>{
   })
 })
 
-app.put('/qa/answers/:id/reported', (req, res)=>{
+app.put('/qa/answers/:id/report', (req, res)=>{
   let id = req.params.id
   db.reportAns(id)
   .then((response)=>{
@@ -105,7 +110,7 @@ app.put('/qa/answers/:id/reported', (req, res)=>{
   })
 })
 
-app.put('/qa/answers/:id/helpfulness', (req, res)=>{
+app.put('/qa/answers/:id/helpful', (req, res)=>{
   let id = req.params.id
   db.markAnsHelpful(id)
   .then((response)=>{

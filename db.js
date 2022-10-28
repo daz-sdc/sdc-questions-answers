@@ -22,7 +22,7 @@ exports.postQuestion = (body, name , id)=>{
 
 exports.postAnswer = (body, name, email, id, photo) =>{
   return  Product_data.update({'results.question_id':id},
-  {$set: {[`results.$.answers.${Date.now()}`]:{id: Date.now(), body:body, answer_name:name, date: new Date(), helpfulness: 0, reported: false, photo: photo, }}})
+  {$set: {[`results.$.answers.${Date.now()}`]:{id: Date.now(), body:body, answer_name:name, date: new Date(), helpfulness: 0, reported: false, photos: photo, }}})
 
 }
 

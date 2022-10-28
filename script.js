@@ -15,11 +15,11 @@ export const options = {
   scenarios: {
     constant_request_rate: {
       executor: 'constant-arrival-rate',
-      rate: 1000,
+      rate: 2000,
       timeUnit: '1s', // 1000 iterations per second, i.e. 1000 RPS
-      duration: '10s',
-      preAllocatedVUs: 1000, // how large the initial pool of VUs would be
-      maxVUs: 1100// if the preAllocatedVUs are not enough, we can initialize more
+      duration: '25s',
+      preAllocatedVUs: 5, // how large the initial pool of VUs would be
+      maxVUs: 500// if the preAllocatedVUs are not enough, we can initialize more
     },
   },
   // thresholds: {
@@ -29,7 +29,9 @@ export const options = {
 };
 
 export default function (){
-  let res = http.get(`http://localhost:3333/qa/?product_id=${randomIntBetween(809817,899855)}&count=4`)
+  // let id = 899855
+  let id = randomIntBetween(809817,899855)
+  let res = http.get(`http://localhost:3333/qa/?product_id=${id}&count=4`)
   check(res, {
     'is status 200': (r) => r.status === 200,
   });
