@@ -1,9 +1,16 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-empty */
 /* eslint-disable no-unused-vars */
 const mongoose = require('mongoose');
+require("dotenv").config();
 const {Product_data} = require('./schema.js')
+const name = process.env.NAME;
+const pw = process.env.PW;
+const port = process.env.PORT;
+const aa = process.env.AA
 
-const db = mongoose.connect('mongodb://localhost/SDC', () =>{
+const ip = '44.202.97.255'
+const db = mongoose.connect(`mongodb://${name}:${pw}@${ip}:27017/SDC`, () =>{
   console.log('Mongoose connected')
 })
 .catch((err)=>{
