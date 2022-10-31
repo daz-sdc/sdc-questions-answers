@@ -7,9 +7,7 @@ const {Product_data} = require('./schema.js')
 const name = process.env.NAME;
 const pw = process.env.PW;
 const port = process.env.PORT;
-const aa = process.env.AA
-
-const ip = '44.202.97.255'
+const ip = process.env.IP
 const db = mongoose.connect(`mongodb://${name}:${pw}@${ip}:27017/SDC`, () =>{
   console.log('Mongoose connected')
 })

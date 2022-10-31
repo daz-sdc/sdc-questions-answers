@@ -5,6 +5,7 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 const db = require('./db.js')
+const token = process.env.LOADER
 newrelic.instrumentLoadedModule(
   'express',    // the module's name, as a string
   express // the module instance
@@ -13,6 +14,10 @@ app.use(express.json());
 
 app.get('/',(req,res)=>{
   res.status(200).send('success')
+})
+
+app.get(`/${token}`,(req,res)=>{
+  res.status(200).send(token)
 })
 
 app.get('/qa', (req, res)=>{
