@@ -1,18 +1,28 @@
 /* eslint-disable no-undef */
 const express = require('express');
-const newrelic = require('newrelic')
+// const newrelic = require('newrelic')
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
 const db = require('./db.js')
 const token = process.env.LOADER
-newrelic.instrumentLoadedModule(
-  'express',    // the module's name, as a string
-  express // the module instance
-);
+const ip = process.env.IP
+const Redis = require('redis')
+const redisClient = Redis.createClient()
+const DEFAULT_EXPIRATION = 3600
+
+redisClient.connect()
+redisClient.on('connect', () => {
+  console.log('Redis connected');
+});
+
+// newrelic.instrumentLoadedModule(
+//   'express',    // the module's name, as a string
+//   express // the module instance
+// );
 app.use(express.json());
 
-app.get('/',(req,res)=>{
+app.get('/',async (req,res)=>{
   res.status(200).send('success')
 })
 
@@ -20,7 +30,8 @@ app.get(`/${token}`,(req,res)=>{
   res.status(200).send(token)
 })
 
-app.get('/qa', (req, res)=>{
+app.get('/qa', async (req, res)=>{
+  try{
     let count;
     let product_id = parseInt(req.query.product_id)
     if (req.query.count === undefined){
@@ -31,26 +42,28 @@ app.get('/qa', (req, res)=>{
     if (isNaN(product_id) || isNaN(count)){
       res.status(500).send('invaild input')
     } else{
-      db.getAll(product_id, count)
-      .then((response)=>{
-        // console.log(response[0])
-        res.status(200).send(response[0])
-      })
-      .catch((err)=>{
-        res.status(500).send(err)
-      })
-
+      let exist = await redisClient.get(`qa?product_id=${product_id}$count=${count}`)
+      if (exist !== null ){
+        console.log('hit')
+        res.status(200).send(JSON.parse(exist))
+      } else {
+        let reply = await db.getAll(product_id, count)
+        redisClient.set(`qa?product_id=${product_id}$count=${count}`, JSON.stringify(reply))
+        res.status(200).send(reply)
+        console.log('miss')
+      }
     }
+
+  } catch (err) {
+    res.status(500).send(err)
+  }
 })
 
-app.post('/qa', (req,res)=>{
-    // console.log(req.body)
+app.post('/qa', async (req,res)=>{
     let body = req.body.body;
     let name = req.body.name;
     let id = req.body.product_id;
-    console.log(new Date())
 
-    // console.log(body, name, id)
     db.postQuestion(body, name , id)
     .then((response)=>{
       res.status(200).send(response)

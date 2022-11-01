@@ -8,8 +8,16 @@ const name = process.env.NAME;
 const pw = process.env.PW;
 const port = process.env.PORT;
 const ip = process.env.IP
-const db = mongoose.connect(`mongodb://${name}:${pw}@${ip}:27017/SDC`, () =>{
+// const db = mongoose.connect(`mongodb://${name}:${pw}@${ip}:27017/SDC`, () =>{
+//   console.log('Mongoose connected')
+// })
+// .catch((err)=>{
+//   console.log(err)
+// })
+
+const db =  mongoose.connect(`mongodb://localhost:27017/SDC`, ()=>{
   console.log('Mongoose connected')
+
 })
 .catch((err)=>{
   console.log(err)
