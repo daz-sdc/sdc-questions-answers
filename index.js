@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const express = require('express');
-// const newrelic = require('newrelic')
+const newrelic = require('newrelic')
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT;
