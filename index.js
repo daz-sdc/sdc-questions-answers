@@ -44,17 +44,18 @@ app.get('/qa', async (req, res)=>{
     } else{
       let exist = await redisClient.get(`qa?product_id=${product_id}$count=${count}`)
       if (exist !== null ){
-        console.log('hit')
+        // console.log('hit')
         res.status(200).send(JSON.parse(exist))
       } else {
         let reply = await db.getAll(product_id, count)
         redisClient.set(`qa?product_id=${product_id}$count=${count}`, JSON.stringify(reply))
         res.status(200).send(reply)
-        console.log('miss')
+        // console.log('miss')
       }
     }
 
-  } catch (err) {
+  }
+  catch (err) {
     res.status(500).send(err)
   }
 })
