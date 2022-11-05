@@ -38,16 +38,9 @@ app.get('/qa', async (req, res)=>{
     if (isNaN(product_id) || isNaN(count)){
       res.status(500).send('invaild input')
     } else{
-      let exist = await redisClient.get(`qa?product_id=${product_id}$count=${count}`)
-      if (exist !== null ){
-        // console.log('hit')
-        res.status(200).send(JSON.parse(exist))
-      } else {
+
         let reply = await db.getAll(product_id, count)
-        redisClient.set(`qa?product_id=${product_id}$count=${count}`, JSON.stringify(reply))
         res.status(200).send(reply)
-        // console.log('miss')
-      }
     }
 
   }
