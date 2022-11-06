@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 const mongoose = require('mongoose');
-mongoose.set('debug', true);
+// mongoose.set('debug', true);
 
 
 const productSchema = new mongoose.Schema({

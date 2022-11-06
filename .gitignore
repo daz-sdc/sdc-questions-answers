@@ -9,3 +9,5 @@ node_modules
 *.csv
 
 *.rdb
+
+newrelic_agent.log

@@ -7,14 +7,14 @@ const port = process.env.PORT;
 const db = require('./db.js')
 const token = process.env.LOADER
 const ip = process.env.IP
-const Redis = require('redis')
-const redisClient = Redis.createClient()
+// const Redis = require('redis')
+// const redisClient = Redis.createClient()
 const DEFAULT_EXPIRATION = 3600
 
-redisClient.connect()
-redisClient.on('connect', () => {
-  console.log('Redis connected');
-});
+// redisClient.connect()
+// redisClient.on('connect', () => {
+//   console.log('Redis connected');
+// });
 
 app.use(express.json());
 
@@ -26,8 +26,8 @@ app.get(`/${token}`,(req,res)=>{
   res.status(200).send(token)
 })
 
-app.get('/qa', async (req, res)=>{
-  try{
+app.get('/qa', (req, res)=>{
+
     let count;
     let product_id = parseInt(req.query.product_id)
     if (req.query.count === undefined){
@@ -38,15 +38,11 @@ app.get('/qa', async (req, res)=>{
     if (isNaN(product_id) || isNaN(count)){
       res.status(500).send('invaild input')
     } else{
-
-        let reply = await db.getAll(product_id, count)
-        res.status(200).send(reply)
+        db.getAll(product_id, count)
+        .then((reply)=>{
+          res.status(200).send(reply)
+        })
     }
-
-  }
-  catch (err) {
-    res.status(500).send(err)
-  }
 })
 
 
