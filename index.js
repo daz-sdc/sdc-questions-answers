@@ -8,7 +8,10 @@ const db = require('./db.js')
 const token = process.env.LOADER
 const ip = process.env.IP
 const Redis = require('redis')
-const redisClient = Redis.createClient()
+const rdip = process.env.RDIP
+// const redisClient = Redis.createClient()
+const redisClient = Redis.createClient({socket:{port: 6379,
+  host: rdip,}});
 const DEFAULT_EXPIRATION = 3600
 
 redisClient.connect()
